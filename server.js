@@ -1,24 +1,19 @@
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
+const express = require("express");
+const path = require("path");
 
-const PORT = 3000;
+const app = express();
 
-const server = http.createServer((req, res) => {
-  const filePath = path.join(__dirname, 'para-voce-meu-amor.html');
+// Porta do Render (obrigatório usar process.env.PORT)
+const PORT = process.env.PORT || 3000;
 
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      res.writeHead(404);
-      res.end('Arquivo não encontrado.');
-      return;
-    }
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(data);
-  });
+// Servir arquivos estáticos (css, js, imagens se tiver)
+app.use(express.static(__dirname));
+
+// Rota principal
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "para-voce-meu-amor.html"));
 });
 
-server.listen(PORT, () => {
-  console.log(`✅ Servidor rodando!`);
-  console.log(`💍 Acesse: http://localhost:${PORT}`);
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
